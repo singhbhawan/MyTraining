@@ -1,0 +1,184 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:Repeater ID="Repeater1" runat="server">
+                <ItemTemplate>
+                    <table border="8">
+                        <tr>
+                            <td>
+                                <img src='<%# Eval("bookimg")%>' height="50" width="50" />
+                            </td>
+                            <td>
+                                <b>Title:</b><%# Eval("booktit") %><br /><b>Author:</b><%# Eval("bookaut") %><br /><b>Pub:</b><%# Eval("bookpub") %><br /><b>Price:</b><%# Eval("bookprc") %><br /></td>
+                        </tr>
+                    </table>
+                </ItemTemplate>
+            </asp:Repeater>
+            <br />
+            <br />
+            <asp:HyperLink ID="HyperLink3" runat="server" NavigateUrl="~/Default.aspx">&lt;&lt;Prev</asp:HyperLink>
+&nbsp;&nbsp;&nbsp; 1 of 3&nbsp;&nbsp;&nbsp;
+            <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="~/Default2.aspx">Next&gt;&gt;</asp:HyperLink>
+        </div>
+    </form>
+</body>
+</html>
+--------------------------------------------using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class _Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Rep_Bind();
+    }
+    private void Rep_Bind()
+    {
+        SqlDataAdapter adp = new SqlDataAdapter("select top 3 * from tbbook",ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+        DataSet ds = new DataSet();
+        adp.Fill(ds);
+        Repeater1.DataSource = ds;
+        Repeater1.DataBind();
+    }
+}
+=========================================
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default2.aspx.cs" Inherits="Default2" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:Repeater ID="Repeater1" runat="server">
+                <ItemTemplate>
+                    <table border="8">
+                        <tr>
+                            <td>
+                                <img src='<%# Eval("bookimg")%>' height="50" width="50" />
+                            </td>
+                            <td>
+                                <b>Title:</b><%# Eval("booktit") %><br /><b>Author:</b><%# Eval("bookaut") %><br /><b>Pub:</b><%# Eval("bookpub") %><br /><b>Price:</b><%# Eval("bookprc") %><br /></td>
+                        </tr>
+                    </table>
+                    </ItemTemplate>
+            </asp:Repeater>
+            <br />
+            <br />
+            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Default.aspx">&lt;&lt;Prev</asp:HyperLink>
+&nbsp;&nbsp;&nbsp; 2 of 3&nbsp;&nbsp;&nbsp;
+            <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="~/Default3.aspx">Next&gt;&gt;</asp:HyperLink>
+        </div>
+    </form>
+</body>
+</html>
+--------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class Default2 : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Rep_Bind();
+    }
+    private void Rep_Bind()
+    {
+        SqlDataAdapter adp = new SqlDataAdapter("select * from tbbook where ( bookid in (104,105,106))", ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+        DataSet ds = new DataSet();
+        adp.Fill(ds);
+        Repeater1.DataSource = ds;
+        Repeater1.DataBind();
+    }
+
+}
+=====================================
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default3.aspx.cs" Inherits="Default3" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:Repeater ID="Repeater1" runat="server">
+                <ItemTemplate>
+                    <table border="8" style="align-self:center;">
+                        <tr>
+                            <td>
+                                <img src='<%# Eval("bookimg")%>' height="50" width="50" />
+                            </td>
+                            <td>
+                                <b>Title:</b><%# Eval("booktit") %><br /><b>Author:</b><%# Eval("bookaut") %><br /><b>Pub:</b><%# Eval("bookpub") %><br /><b>Price:</b><%# Eval("bookprc") %><br /></td>
+                        </tr>
+                    </table>
+                    </ItemTemplate>
+            </asp:Repeater>
+            <br />
+            <br />
+            <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/Default2.aspx">&lt;&lt;Prev</asp:HyperLink>
+&nbsp;&nbsp;&nbsp; 3 of 3&nbsp;&nbsp;&nbsp;
+            <asp:HyperLink ID="HyperLink2" runat="server" NavigateUrl="~/Default3.aspx">Next&gt;&gt;</asp:HyperLink>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </div>
+    </form>
+</body>
+</html>
+-----------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class Default3 : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Rep_Bind();
+    }
+    private void Rep_Bind()
+    {
+        SqlDataAdapter adp = new SqlDataAdapter("select * from tbbook where ( bookid in (107,108,109))", ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+        DataSet ds = new DataSet();
+        adp.Fill(ds);
+        Repeater1.DataSource = ds;
+        Repeater1.DataBind();
+    }
+}
+========================================================
+
+
+
