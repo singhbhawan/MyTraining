@@ -1,0 +1,230 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:Repeater ID="Repeater1" runat="server">
+                <ItemTemplate>
+                    <table border="6" style="background-color:aquamarine" >
+                        <tr>
+                            <td>
+                                <img src='<%# Eval("bookimg") %>' height="50" width="50" />
+                                </td>
+                                <td>
+                                    <b>Title:</b><%# Eval("booktit") %><br/>
+                                    <b>Author:</b><%# Eval("bookaut") %><br />
+                                    <b>Pub:</b><%# Eval("bookpub") %><br />
+                                    <b>Price:</b><%# Eval("bookprc") %><br />
+                                </td>
+                        </tr>
+                    </table>
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
+    </form>
+</body>
+</html>
+-------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class _Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Rep_Bind();
+
+    }
+    private void Rep_Bind()
+    {
+        SqlDataAdapter adp = new SqlDataAdapter("select * from tbbook",ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+        DataSet ds = new DataSet();
+        adp.Fill(ds);
+        Repeater1.DataSource = ds;
+        Repeater1.DataBind();
+    }
+
+}
+===================================================
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default2.aspx.cs" Inherits="Default2" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>            
+            <asp:Repeater ID="Repeater1" runat="server">
+                <HeaderTemplate>
+                    <table border="8"  >
+                        <tr style="background-color:aqua" >
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Pub</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Amount</th>
+                        </tr>
+                </HeaderTemplate>
+                <ItemTemplate>
+                    <tr style="background-color:mediumvioletred">
+                        <td><%# Eval("bookid") %></td>
+                        <td><%# Eval("booktit") %></td>
+                        <td><%# Eval("bookaut") %></td>
+                        <td><%# Eval("bookpub") %></td>
+                        <td><%# Eval("bookprc") %></td>
+                        <td><%# Disc(Convert.ToInt32(Eval("bookprc"))) %></td>
+                        <td><%# Amt(Convert.ToInt32(Eval("bookprc"))) %></td>
+                    </tr>
+                </ItemTemplate>
+                <AlternatingItemTemplate>
+                    <tr style="background-color:hotpink">
+                        <td><%# Eval("bookid") %></td>
+                        <td><%# Eval("booktit") %></td>
+                        <td><%# Eval("bookaut") %></td>
+                        <td><%# Eval("bookpub") %></td>
+                        <td><%# Eval("bookprc") %></td>
+                        <td><%# Disc(Convert.ToInt32(Eval("bookprc"))) %></td>
+                        <td><%# Amt(Convert.ToInt32(Eval("bookprc"))) %></td>
+                    </tr>
+                </AlternatingItemTemplate>
+                <FooterTemplate>
+                    </table>
+                </FooterTemplate>
+            </asp:Repeater>
+        </div>
+    </form>
+</body>
+</html>
+------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class Default2 : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Rep_Bind();
+    }
+    private void Rep_Bind()
+    {
+        SqlDataAdapter adp = new SqlDataAdapter("select * from tbbook",ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+        DataSet ds = new DataSet();
+        adp.Fill(ds);
+        Repeater1.DataSource = ds;
+        Repeater1.DataBind();
+    }
+    public Int32 Disc(Int32 prc)
+    {
+        return prc * 10 / 100;
+    }
+    public Int32 Amt(Int32 prc)
+    {
+        return prc - Disc(prc);
+    }
+}
+===============================================
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default3.aspx.cs" Inherits="Default3" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:Repeater ID="Repeater1" runat="server">
+                <HeaderTemplate>
+                    <table border="8"  >
+                        <tr style="background-color:aqua" >
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Pub</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Amount</th>
+                        </tr>
+                </HeaderTemplate>
+                <ItemTemplate>
+                    <tr style="background-color:mediumvioletred">
+                        <td><%# Eval("bookid") %></td>
+                        <td><%# Eval("booktit") %></td>
+                        <td><%# Eval("bookaut") %></td>
+                        <td><%# Eval("bookpub") %></td>
+                        <td><%# Eval("bookprc") %></td>
+                        <td><%# Disc(Convert.ToInt32(Eval("bookprc"))) %></td>
+                        <td><%# Amt(Convert.ToInt32(Eval("bookprc"))) %></td>
+                    </tr>
+                </ItemTemplate>
+                <FooterTemplate>
+                    </table>
+                </FooterTemplate>
+            </asp:Repeater>
+        </div>
+    </form>
+</body>
+</html>using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class Default3 : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Rep_Bind();
+    }
+    private void Rep_Bind()
+    {
+        SqlDataAdapter adp = new SqlDataAdapter("select top 1 * from tbbook ", ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+        DataSet ds = new DataSet();
+        adp.Fill(ds);
+        Repeater1.DataSource = ds;
+        Repeater1.DataBind();
+    }
+    public Int32 Disc (Int32 prc)
+    {
+        return prc * 10 / 100;
+    }
+    public Int32 Amt(Int32 prc)
+    {
+        return prc - Disc(prc); 
+    }
+}
+===============================================
+-----------------------------------
+
+
+
