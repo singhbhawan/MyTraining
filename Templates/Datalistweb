@@ -9,12 +9,28 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <asp:DataList ID="DataList1" runat="server">
+            <asp:DataList ID="DataList1" runat="server" BackColor="#DEBA84" BorderColor="#DEBA84" BorderStyle="None" BorderWidth="1px" CellPadding="3" CellSpacing="2" GridLines="Both" RepeatColumns="3" OnEditCommand="DataList1_EditCommand" OnCancelCommand="DataList1_CancelCommand">
+                <FooterStyle BackColor="#F7DFB5" ForeColor="#8C4510" />
+                <HeaderStyle BackColor="#A55129" Font-Bold="True" ForeColor="White" />
+                <ItemStyle BackColor="#FFF7E7" ForeColor="#8C4510" />
+                <ItemTemplate>
+                    <b>Title:</b><%# Eval("booktit") %><br /><b>Author:</b><%# Eval("bookaut") %><br /><b>Pub:</b><%# Eval("bookpub") %><br /><b>Price:</b><%# Eval("bookprc") %><br /><asp:LinkButton ID="lk" Text="Edit" CommandName="edit" runat="server" />
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <b>Title:</b><asp:TextBox ID="t1" Text='<%# Eval("booktit") %>' runat="server" /><br />
+                    <b>Author:</b><asp:TextBox ID="t2" Text='<%# Eval("bookaut") %>' runat="server" /><br />
+                    <b>Pub:</b><asp:TextBox ID="t3" Text='<%# Eval("bookpub") %>' runat="server" /><br />
+                    <b>Price:</b><asp:TextBox ID="t4" Text='<%# Eval("bookprc") %>' runat="server" /><br />
+                    <asp:LinkButton ID="lk1" Text="Update" CommandName="update" runat="server" />
+                    <asp:LinkButton ID="lk2" Text="Cancel" CommandName="cancel" runat="server" />
+                        </EditItemTemplate>
+                <SelectedItemStyle BackColor="#738A9C" Font-Bold="True" ForeColor="White" />
             </asp:DataList>
         </div>
     </form>
 </body>
 </html>
+
 --------------------------------------------
 using System;
 using System.Collections.Generic;
@@ -43,6 +59,17 @@ public partial class _Default : System.Web.UI.Page
         adp.Fill(ds);
         DataList1.DataSource = ds;
         DataList1.DataBind();
+    }
+    protected void DataList1_EditCommand(object source, DataListCommandEventArgs e)
+    {
+        DataList1.EditItemIndex = e.Item.ItemIndex;
+        List_Bind();
+    }
+
+    protected void DataList1_CancelCommand(object source, DataListCommandEventArgs e)
+    {
+        DataList1.EditItemIndex = -1;
+        List_Bind();
     }
 }
 =====================================================================
