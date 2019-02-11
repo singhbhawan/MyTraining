@@ -1,0 +1,71 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <b>Q.</b><asp:Repeater ID="Repeater1" runat="server" OnItemCommand="Repeater1_ItemCommand">               
+                <ItemTemplate>
+                    <asp:LinkButton id="Q1" runat="server" Text='<%# Eval("qstdsc") %>' CommandName="Q1" /><br />
+                    <b>Subby:</b><asp:Label id="S1" runat="server" Text='<%# Eval("qstsubby") %>' Visible="false" /><br />
+                    <b>Date:</b><asp:Label id="D1" runat="server" Text='<%# Eval("qstdate") %>' Visible="false" /><br />
+                    <b>Ans:</b><asp:Label id="A1" runat="server" Text='<%# Eval("qstans") %>' Visible="false" /><br />
+  </ItemTemplate>
+            </asp:Repeater>
+        </div>
+    </form>
+</body>
+</html>
+--------------------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class _Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Rep_Bind();
+    }
+    private void Rep_Bind()
+    {
+        SqlDataAdapter adp = new SqlDataAdapter("select * from tbqst", ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+        DataSet ds = new DataSet();
+        adp.Fill(ds);
+        Repeater1.DataSource = ds;
+        Repeater1.DataBind();
+    }
+
+
+    protected void Repeater1_ItemCommand(object source, RepeaterCommandEventArgs e)
+    {
+        if (e.CommandName == "Q1")
+        {
+            Control control;
+
+            control = e.Item.FindControl("S1");
+            if (control != null)
+                control.Visible = true;
+
+            control = e.Item.FindControl("D1");
+            if (control != null)
+                control.Visible = true;
+
+            control = e.Item.FindControl("A1");
+            if (control != null)
+                control.Visible = true;
+        }
+    }
+}
+===========================================================================
