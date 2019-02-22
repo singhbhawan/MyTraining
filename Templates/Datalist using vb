@@ -1,0 +1,110 @@
+<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="_Default" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:DataList ID="DataList1" runat="server" BackColor="LightGoldenrodYellow" BorderColor="Tan" BorderWidth="1px" CellPadding="2" ForeColor="Black" RepeatColumns="2" Width="439px" DataKeyField="empno">
+                <AlternatingItemStyle BackColor="PaleGoldenrod" />
+                <FooterStyle BackColor="Tan" />
+                <HeaderStyle BackColor="Tan" Font-Bold="True" />
+                <ItemTemplate>
+                    <b>Name:</b><%# Eval("ename") %><br /><b>Address:</b><%# Eval("eadd") %><br /><b>Salary:</b><%# Eval("esal") %><br /><b>Dept::</b><%# Eval("dname") %><br /><b>Desg:</b><%# Eval("dsgnam") %><br /><asp:LinkButton ID="lk" Text="Edit" CommandName="edit" runat="server" />
+                </ItemTemplate>
+                <EditItemTemplate>
+                    <b>Name:</b><asp:TextBox ID="t1" Text='<%# Eval("ename") %>' runat="server" /><br />
+                    <b>Address:</b><asp:TextBox ID="t2" Text='<%# Eval("eadd") %>' runat="server" /><br />
+                    <b>Salary:</b><asp:TextBox ID="t3" Text='<%# Eval("esal") %>' runat="server" /><br />
+                    <b>Dept:</b><asp:DropDownList ID="dl" DataTextField="dname" DataValueField="dno" runat="server" /><br />
+                    <b>Dsg:</b><asp:DropDownList ID="dl1" DataTextField="dsgnam" DataValueField="dsgcod" runat="server" /><br />
+                    <asp:LinkButton ID="lk1" Text="Update" CommandName="update" runat="server" />
+                    <asp:LinkButton ID="lk2" Text="Cancel" CommandName="cancel" runat="server" />
+                </EditItemTemplate>
+                <SelectedItemStyle BackColor="DarkSlateBlue" ForeColor="GhostWhite" />
+            </asp:DataList>
+        </div>
+    </form>
+</body>
+</html>
+==================================================================================
+Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Configuration
+Partial Class _Default
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Page.IsPostBack = False Then
+            List_Bind()
+
+        End If
+    End Sub
+    Private Sub List_Bind()
+        Dim qry As String
+        qry = "select empno,ename,eadd,esal,edno,edsgcod,dname,dsgnam from tbemployee,tbdep,tbdsg where edno=dno and edsgcod=dsgcod"
+        Dim adp As New SqlDataAdapter(qry, ConfigurationManager.ConnectionStrings("cn").ConnectionString)
+        Dim ds As New DataSet()
+        adp.Fill(ds)
+        DataList1.DataSource = ds
+        DataList1.DataBind()
+
+    End Sub
+    Protected Sub DataList1_EditCommand(source As Object, e As DataListCommandEventArgs) Handles DataList1.EditCommand
+        DataList1.EditItemIndex = e.Item.ItemIndex
+        List_Bind()
+    End Sub
+    Protected Sub DataList1_CancelCommand(source As Object, e As DataListCommandEventArgs) Handles DataList1.CancelCommand
+        DataList1.EditItemIndex = -1
+        List_Bind()
+    End Sub
+    Protected Sub DataList1_ItemDataBound(sender As Object, e As DataListItemEventArgs) Handles DataList1.ItemDataBound
+        If e.Item.ItemType = ListItemType.EditItem Then
+            Dim dep As DropDownList
+            Dim dsg As DropDownList
+            dep = CType(e.Item.FindControl("dl"), DropDownList)
+            dsg = CType(e.Item.FindControl("dl1"), DropDownList)
+            Dim adp As New SqlDataAdapter("select * from tbdep;select * from tbdsg", ConfigurationManager.ConnectionStrings("cn").ConnectionString)
+            Dim ds As New DataSet()
+            adp.Fill(ds)
+            dep.DataSource = ds.Tables(0)
+            dep.DataBind()
+            dsg.DataSource = ds.Tables(1)
+            dsg.DataBind()
+            Dim r As DataRowView
+            r = e.Item.DataItem
+            dep.Items.FindByValue(r("edno")).Selected = True
+            dsg.Items.FindByValue(r("edsgcod")).Selected = True
+        End If
+    End Sub
+    Protected Sub DataList1_UpdateCommand(source As Object, e As DataListCommandEventArgs) Handles DataList1.UpdateCommand
+        Dim eno, es, dno, dscod As Int32
+        Dim en, ed As String
+        eno = Convert.ToInt32(DataList1.DataKeys(e.Item.ItemIndex))
+        en = CType(e.Item.FindControl("t1"), TextBox).Text
+        ed = CType(e.Item.FindControl("t2"), TextBox).Text
+        es = Convert.ToInt32(CType(e.Item.FindControl("t3"), TextBox).Text)
+        dno = Convert.ToInt32(CType(e.Item.FindControl("dl"), DropDownList).Text)
+        dscod = Convert.ToInt32(CType(e.Item.FindControl("dl1"), DropDownList).Text)
+        Dim con As New SqlConnection
+        con.ConnectionString = ConfigurationManager.ConnectionStrings("cn").ConnectionString
+        con.Open()
+        Dim cmd As New SqlCommand
+        cmd.CommandText = "update tbemployee set ename=@en,eadd=@ed,esal=@es,edno=@dno,edsgcod=@dscod where empno=@eno"
+        cmd.Connection = con
+        cmd.Parameters.Add("@eno", SqlDbType.Int).Value = eno
+        cmd.Parameters.Add("@en", SqlDbType.VarChar, 50).Value = en
+        cmd.Parameters.Add("@ed", SqlDbType.VarChar, 50).Value = ed
+        cmd.Parameters.Add("@es", SqlDbType.Int).Value = es
+        cmd.Parameters.Add("@dno", SqlDbType.Int).Value = dno
+        cmd.Parameters.Add("@dscod", SqlDbType.Int).Value = dscod
+        cmd.ExecuteNonQuery()
+        cmd.Dispose()
+        DataList1.EditItemIndex = -1
+        List_Bind()
+    End Sub
+End Class
