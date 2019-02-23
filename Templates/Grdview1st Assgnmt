@@ -1,0 +1,110 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="4" ForeColor="#333333" GridLines="None" Height="300px" Width="528px" DataKeyNames="dno" OnRowDataBound="GridView1_RowDataBound">
+                <AlternatingRowStyle BackColor="White" />
+                <Columns>
+                    <asp:TemplateField HeaderText="Depts.">
+                        <ItemTemplate>
+                            <b>Depno:</b><%# Eval("dno") %><br /><b>Depname:</b><%# Eval("dname") %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Employees Detail">
+                        <ItemTemplate>
+                            <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" BackColor="White" BorderColor="#999999" BorderStyle="Solid" BorderWidth="1px" CellPadding="3" ForeColor="Black" GridLines="Vertical" Height="154px" Width="578px" DataKeyNames="empno">
+                                <AlternatingRowStyle BackColor="#CCCCCC" />
+                                <Columns>
+                                    <asp:TemplateField HeaderText="Empno">
+                                       <ItemTemplate>
+                                            <%# Eval("empno") %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Name">
+                                        <ItemTemplate>
+                                            <%# Eval("ename") %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Address">
+                                        <ItemTemplate>
+                                            <%# Eval("eadd") %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                                <FooterStyle BackColor="#CCCCCC" />
+                                <HeaderStyle BackColor="Black" Font-Bold="True" ForeColor="White" />
+                                <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" />
+                                <SelectedRowStyle BackColor="#000099" Font-Bold="True" ForeColor="White" />
+                                <SortedAscendingCellStyle BackColor="#F1F1F1" />
+                                <SortedAscendingHeaderStyle BackColor="#808080" />
+                                <SortedDescendingCellStyle BackColor="#CAC9C9" />
+                                <SortedDescendingHeaderStyle BackColor="#383838" />
+                            </asp:GridView>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+                <FooterStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
+                <HeaderStyle BackColor="#990000" Font-Bold="True" ForeColor="White" />
+                <PagerStyle BackColor="#FFCC66" ForeColor="#333333" HorizontalAlign="Center" />
+                <RowStyle BackColor="#FFFBD6" ForeColor="#333333" />
+                <SelectedRowStyle BackColor="#FFCC66" Font-Bold="True" ForeColor="Navy" />
+                <SortedAscendingCellStyle BackColor="#FDF5AC" />
+                <SortedAscendingHeaderStyle BackColor="#4D0000" />
+                <SortedDescendingCellStyle BackColor="#FCF6C0" />
+                <SortedDescendingHeaderStyle BackColor="#820000" />
+            </asp:GridView>
+        </div>
+    </form>
+</body>
+</html>
+==============================================================================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class _Default : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        Grd_Bind();
+    }
+    private void Grd_Bind()
+    {
+        SqlDataAdapter adp = new SqlDataAdapter("select * from tbdep", ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+        DataSet ds = new DataSet();
+        adp.Fill(ds);
+        GridView1.DataSource = ds;
+        GridView1.DataBind();
+    }
+
+    protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType==DataControlRowType.DataRow)
+        {
+            GridView gv = (GridView)e.Row.FindControl("GridView2");
+            Int32 dno = Convert.ToInt32(GridView1.DataKeys[e.Row.RowIndex].Value);
+            SqlDataAdapter adp = new SqlDataAdapter("select * from tbemployee where edno=@dno", ConfigurationManager.ConnectionStrings["cn"].ConnectionString);
+            adp.SelectCommand.Parameters.Add("@dno", SqlDbType.Int).Value = dno;
+            DataSet ds = new DataSet();
+            adp.Fill(ds);
+            gv.DataSource = ds;
+            gv.DataBind();
+        }
+    }
+}
+-===========--------------===============-----------================
+
+
