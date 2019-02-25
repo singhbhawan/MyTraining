@@ -1,0 +1,108 @@
+Make new database
+Make the below tables
+===========================================
+CREATE TABLE [dbo].[tbplan] (
+    [plncod]   INT            NOT NULL,
+    [plnnam]   VARCHAR (100)  NULL,
+    [plndsc]   VARCHAR (1000) NULL,
+    [plncst]   FLOAT (53)     NULL,
+    [plndur]   INT            NULL,
+    [plnnoemp] INT            NULL,
+    PRIMARY KEY CLUSTERED ([plncod] ASC)
+);
+===========================================
+CREATE TABLE [dbo].[tbcmp] (
+    [cmpcod]    INT           NOT NULL,
+    [cmpnam]    VARCHAR (100) NULL,
+    [cmpurl]    VARCHAR (500) NULL,
+    [cmplog]    VARCHAR (100) NULL,
+    [cmpregdat] DATETIME      NULL,
+    PRIMARY KEY CLUSTERED ([cmpcod] ASC)
+);
+
+===========================================
+CREATE TABLE [dbo].[tbuser] (
+    [usrcod]    INT           NOT NULL,
+    [usreml]    VARCHAR (100) NULL,
+    [usrpwd]    VARCHAR (100) NULL,
+    [usrcmpcod] INT           NULL,
+    [usrrol]    CHAR (1)      NULL,
+    [usrcrtdat] DATETIME      NULL,
+    [usrnam]    VARCHAR (100) NULL,
+    [usrpic]    VARCHAR (50)  NULL,
+    PRIMARY KEY CLUSTERED ([usrcod] ASC),
+    UNIQUE NONCLUSTERED ([usreml] ASC),
+    CONSTRAINT [FK_tbuser_tbcmp] FOREIGN KEY ([usrcmpcod]) REFERENCES [dbo].[tbcmp] ([cmpcod])
+);
+
+=================================================================================================
+CREATE TABLE [dbo].[tbcmppln] (
+    [cmpplncod]    INT      NOT NULL,
+    [cmpplncmpcod] INT      NULL,
+    [cmpplnplncod] INT      NULL,
+    [cmpplndat]    DATETIME NULL,
+    PRIMARY KEY CLUSTERED ([cmpplncod] ASC),
+    CONSTRAINT [FK_tbcmppln_tbcmp] FOREIGN KEY ([cmpplncmpcod]) REFERENCES [dbo].[tbcmp] ([cmpcod]),
+    CONSTRAINT [FK_tbcmppln_tbplan] FOREIGN KEY ([cmpplnplncod]) REFERENCES [dbo].[tbplan] ([plncod])
+);
+=====================================================================================================
+CREATE TABLE [dbo].[tbprj] (
+    [prjcod]       INT            NOT NULL,
+    [prjdat]       DATETIME       NULL,
+    [prjtit]       VARCHAR (100)  NULL,
+    [prjdsc]       VARCHAR (1000) NULL,
+    [prjlog]       VARCHAR (100)  NULL,
+    [prjownusrcod] INT            NULL,
+    [prjsts]       CHAR (1)       NULL,
+    PRIMARY KEY CLUSTERED ([prjcod] ASC),
+    CONSTRAINT [FK_tbprj_tbuser] FOREIGN KEY ([prjownusrcod]) REFERENCES [dbo].[tbuser] ([usrcod])
+);
+===================================================================================================
+CREATE TABLE [dbo].[tbtkt] (
+    [tktcod]       INT            NOT NULL,
+    [tktdat]       DATETIME       NULL,
+    [tktcrtusrcod] INT            NULL,
+    [tktdsc]       VARCHAR (2000) NULL,
+    [tktno]        VARCHAR (100)  NULL,
+    [tktatt]       VARCHAR (50)   NULL,
+    [tktsts]       CHAR (1)       NULL,
+    PRIMARY KEY CLUSTERED ([tktcod] ASC),
+    CONSTRAINT [FK_tbtkt_tbuser] FOREIGN KEY ([tktcrtusrcod]) REFERENCES [dbo].[tbuser] ([usrcod])
+);
+===================================================================================================
+CREATE TABLE [dbo].[tbsprint] (
+    [sprcod]    INT           NOT NULL,
+    [sprno]     VARCHAR (100) NULL,
+    [sprstrdat] DATETIME      NULL,
+    [sprenddat] DATETIME      NULL,
+    [sprsts]    CHAR (1)      NULL,
+    PRIMARY KEY CLUSTERED ([sprcod] ASC)
+);
+=========================================================================================================
+CREATE TABLE [dbo].[tbsprtkt] (
+    [sprtktcod]       INT NOT NULL,
+    [sprtktsprcod]    INT NULL,
+    [sprtkttktcod]    INT NULL,
+    [sprtktasgusrcod] INT NULL,
+    PRIMARY KEY CLUSTERED ([sprtktcod] ASC),
+    CONSTRAINT [FK_tbsprtkt_tbsprint] FOREIGN KEY ([sprtktsprcod]) REFERENCES [dbo].[tbsprint] ([sprcod]),
+    CONSTRAINT [FK_tbsprtkt_tbtkt] FOREIGN KEY ([sprtkttktcod]) REFERENCES [dbo].[tbtkt] ([tktcod]),
+    CONSTRAINT [FK_tbsprtkt_tbuser] FOREIGN KEY ([sprtktasgusrcod]) REFERENCES [dbo].[tbuser] ([usrcod])
+);
+===========================================================================================================
+CREATE TABLE [dbo].[tbsprtktcom] (
+    [sprtktcomcod]       INT            NOT NULL,
+    [sprtktcomsprtktcod] INT            NULL,
+    [sprtktcomusrcod]    INT            NULL,
+    [sprtktcomdat]       DATETIME       NULL,
+    [sprtktcomdsc]       VARCHAR (1000) NULL,
+    [sprtktcomatt]       VARCHAR (50)   NULL,
+    PRIMARY KEY CLUSTERED ([sprtktcomcod] ASC),
+    CONSTRAINT [FK_tbsprtktcom_tbsprtkt] FOREIGN KEY ([sprtktcomsprtktcod]) REFERENCES [dbo].[tbsprtkt] ([sprtktcod]),
+    CONSTRAINT [FK_tbsprtktcom_tbuser] FOREIGN KEY ([sprtktcomusrcod]) REFERENCES [dbo].[tbuser] ([usrcod])
+);
+============================================================================================================
+Now make stored procedure for each table!!!!!
+============================================================================================================\
+Stored Procedures
+==================
