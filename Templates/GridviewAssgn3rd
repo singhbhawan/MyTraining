@@ -1,0 +1,186 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" BackColor="White" BorderColor="#E7E7FF" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Horizontal" Height="249px" Width="599px" OnRowEditing="GridView1_RowEditing" OnRowCancelingEdit="GridView1_RowCancelingEdit" OnRowDeleting="GridView1_RowDeleting" ShowFooter="True" OnRowUpdating="GridView1_RowUpdating"   >
+                <AlternatingRowStyle BackColor="#F7F7F7" />
+                <Columns>
+                    <asp:TemplateField HeaderText="Empno">
+                        <FooterTemplate>
+                            <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
+                        </FooterTemplate>
+                        <ItemTemplate>
+                            <asp:Label ID="Label1" runat="server" Text='<%# Eval("empno") %>'></asp:Label>
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:Label ID="lb" Text='<%# Eval("empno") %>' runat="server" />
+                        </EditItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Name">
+                        <FooterTemplate>
+                            <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
+                        </FooterTemplate>
+                        <ItemTemplate>
+                            <%# Eval("ename") %>
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:TextBox ID="t1" Text='<%# Eval("ename") %>' runat="server" />
+                        </EditItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Address">
+                        <FooterTemplate>
+                            <asp:TextBox ID="TextBox3" runat="server"></asp:TextBox>
+                        </FooterTemplate>
+                        <ItemTemplate>
+                            <%# Eval("eadd") %>
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:TextBox ID="t2" Text='<%# Eval("eadd") %>' runat="server" />
+                        </EditItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Salary">
+                        <FooterTemplate>
+                            <asp:TextBox ID="TextBox4" runat="server"></asp:TextBox>
+                        </FooterTemplate>
+                        <ItemTemplate>
+                            <%# Eval("esal") %>
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:TextBox ID="t3" Text='<%# Eval("esal") %>' runat="server" />
+                        </EditItemTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Edit">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lk" Text="Edit" CommandName="edit" runat="server" />
+                        </ItemTemplate>
+                        <EditItemTemplate>
+                            <asp:LinkButton ID="lk3" Text="Update" CommandName="update" runat="server" />
+                            <asp:LinkButton ID="lk4" Text="Cancel" CommandName="cancel" runat="server" />
+                        </EditItemTemplate>
+                        <FooterTemplate>
+                            <asp:Button ID="b1" Text="Insert Record"  runat="server"   />
+                        </FooterTemplate>
+                    </asp:TemplateField>
+                    <asp:TemplateField HeaderText="Delete">
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lk1" Text="Delete" CommandName="delete" runat="server"  />
+                        </ItemTemplate>
+                    </asp:TemplateField>
+                </Columns>
+                <FooterStyle BackColor="#B5C7DE" ForeColor="#4A3C8C" />
+                <HeaderStyle BackColor="#4A3C8C" Font-Bold="True" ForeColor="#F7F7F7" />
+                <PagerStyle BackColor="#E7E7FF" ForeColor="#4A3C8C" HorizontalAlign="Right" />
+                <RowStyle BackColor="#E7E7FF" ForeColor="#4A3C8C" />
+                <SelectedRowStyle BackColor="#738A9C" Font-Bold="True" ForeColor="#F7F7F7" />
+                <SortedAscendingCellStyle BackColor="#F4F4FD" />
+                <SortedAscendingHeaderStyle BackColor="#5A4C9D" />
+                <SortedDescendingCellStyle BackColor="#D8D8F0" />
+                <SortedDescendingHeaderStyle BackColor="#3E3277" />
+            </asp:GridView>
+        </div>
+    </form>
+</body>
+</html>
+==============================================================================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Configuration;
+
+public partial class _Default : System.Web.UI.Page
+{
+    string conString = ConfigurationManager.ConnectionStrings["cn"].ConnectionString;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+       
+        if (Page.IsPostBack == false)
+            Grd_Bind();
+    }
+    private void Grd_Bind()
+    {
+        string strConnString = ConfigurationManager.ConnectionStrings["cn"].ConnectionString;
+        DataTable dt = new DataTable();
+        using (SqlConnection con = new SqlConnection(strConnString))
+        {
+            string strQuery = "SELECT * FROM tbemp";
+            SqlCommand cmd = new SqlCommand(strQuery);
+            using (SqlDataAdapter sda = new SqlDataAdapter())
+            {
+                cmd.Connection = con;
+                con.Open();
+                sda.SelectCommand = cmd;
+                sda.Fill(dt);
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
+            }
+        }
+    }
+   
+
+    protected void GridView1_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        GridView1.EditIndex = e.NewEditIndex;
+        Grd_Bind();
+    }
+
+    protected void GridView1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        GridView1.EditIndex = -1;
+        Grd_Bind();
+    }
+
+    protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        SqlConnection con = new SqlConnection();
+        con.ConnectionString = ConfigurationManager.ConnectionStrings["cn"].ConnectionString;
+        SqlCommand cmd = new SqlCommand();
+        Label lbldeleteID = (Label)GridView1.Rows[e.RowIndex].FindControl("Label1");
+        cmd.CommandText = "Delete from tbemp where empno='" + lbldeleteID.Text + "'";
+        cmd.Connection = con;
+        con.Open();
+        cmd.ExecuteNonQuery();
+        con.Close();
+        Grd_Bind();
+
+    }
+    protected void GridView1_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        Int32 eno, es;
+        string en, ed;
+        eno = Convert.ToInt32(((Label)(GridView1.Rows[e.RowIndex].FindControl("lb"))).Text);
+        en = (((TextBox)(GridView1.Rows[e.RowIndex].FindControl("t1"))).Text);
+        ed = (((TextBox)(GridView1.Rows[e.RowIndex].FindControl("t2"))).Text);
+        es = Convert.ToInt32(((TextBox)(GridView1.Rows[e.RowIndex].FindControl("t3"))).Text);
+        SqlConnection con = new SqlConnection();
+        con.ConnectionString = ConfigurationManager.ConnectionStrings["cn"].ConnectionString;
+        con.Open();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "update tbemp set ename=@en,eadd=@ed,esal=@es where empno=@eno";
+        cmd.Connection = con;
+        cmd.Parameters.Add("@eno", SqlDbType.Int).Value = eno;
+        cmd.Parameters.Add("@en", SqlDbType.VarChar,50).Value = en;
+        cmd.Parameters.Add("@ed", SqlDbType.VarChar,50).Value = ed;
+        cmd.Parameters.Add("@es", SqlDbType.Int).Value = es;
+        cmd.ExecuteNonQuery();
+        cmd.Dispose();
+        GridView1.EditIndex = -1;
+        Grd_Bind();
+    }
+
+    protected void b1_Click(object sender, EventArgs e)
+    {
+
+    }
+}
