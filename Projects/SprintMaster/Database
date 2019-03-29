@@ -106,3 +106,311 @@ Now make stored procedure for each table!!!!!
 ============================================================================================================\
 Stored Procedures
 ==================
+//for tbplan Table
+CREATE PROCEDURE inspln
+@plnnam varchar(100),
+@plndsc varchar(100),
+@plncst float,
+@plndur int,
+@plnnoemp int
+AS
+	insert tbplan values(@plnnam,@plndsc,@plncst,@plndur,@plnnoemp)
+--------------------------------------------------------------------
+CREATE PROCEDURE updpln
+@pcod int,
+@pnam varchar(100),
+@pdsc varchar(100),
+@pcst float,
+@pdur int,
+@pnemp int
+AS
+	update tbplan set plnnam=@pcod,plndsc=@pdsc,plncst=@pcst,plndur=@pdur,plnnoemp=@pnemp where plncod=@pcod
+    ---------------------------------------------------------------------------------------------------------
+    CREATE PROCEDURE delpln
+@pcod int
+AS
+	delete from tbplan where plncod=@pcod
+---------------------------------------------------
+    CREATE PROCEDURE displn
+AS
+	select * from tbplan
+-------------------------------------------------
+    CREATE PROCEDURE finpln
+@pcod int
+AS
+	select * from tbplan where plncod=@pcod
+=============================================
+//For tbcmp
+CREATE PROCEDURE inscmp
+@cnam varchar(100),
+@curl varchar(500),
+@clog varchar(100),
+@cregdat datetime
+AS
+	insert tbcmp values(@cnam,@curl,@clog,@cregdat)
+ -------------------------------------------------
+    CREATE PROCEDURE updcmp
+@ccod int,
+@cnam varchar(100),
+@curl varchar(500),
+@clog varchar(100),
+@cregdat datetime
+AS
+	update tbcmp set cmpnam=@cnam,cmpurl=@curl,cmplog=@clog,cmpregdat=@cregdat where cmpcod=@ccod
+ ---------------------------------------------------------------------------------------------
+    CREATE PROCEDURE delcmp
+@ccod int
+AS
+	delete from tbcmp where cmpcod=@ccod
+    ------------------------------------------
+    CREATE PROCEDURE fincmp
+@ccod int
+AS
+	select * from tbcmp where cmpcod=@ccod
+ -------------------------------------------
+    CREATE PROCEDURE discmp
+AS
+	select * from tbcmp
+ ============================================
+//for tbuser
+CREATE PROCEDURE insusr
+@ueml varchar(100),
+@upwd varchar(100),
+@ucmcod int,
+@urol char(1),
+@ucrdat datetime,
+@unam varchar(100),
+@upic varchar(50)
+AS
+	insert tbuser values(@ueml,@upwd,@ucmcod,@urol,@ucrdat,@unam,@upic)
+  ------------------------------------------------------------------
+     CREATE PROCEDURE updusr
+@ucod int,
+@ueml varchar(100),
+@upwd varchar(100),
+@ucmcod int,
+@urol char(1),
+@ucrdat datetime,
+@unam varchar(100),
+@upic varchar(50)
+AS
+	update tbuser set usreml=@ueml,usrpwd=@upwd,usrcmpcod=@ucmcod,usrcrtdat=@ucrdat,usrnam=@unam,usrpic=@upic where usrcod=@ucod
+  ----------------------------------------------------------------------------------------------------------------------------
+    CREATE PROCEDURE delusr
+@ucod int
+AS
+	delete from tbuser where usrcod=@ucod
+ --------------------------------------
+    CREATE PROCEDURE finusr
+@ucod int
+AS
+	select * from tbuser where usrcod=@ucod
+ ---------------------------------------
+    CREATE PROCEDURE disusr
+AS
+	select * from tbuser
+ =======================================
+    //for tbcmppln
+CREATE PROCEDURE inscpln
+@cpccod int,
+@cppcod int,
+@cpdat int
+AS
+	insert tbcmppln values(@cpccod,@cppcod,@cpdat)
+ ----------------------------------------------
+    CREATE PROCEDURE updcpln
+@cpcod int,
+@cpccod int,
+@cppcod int,
+@cpdat int
+AS
+	update tbcmppln set cmpplncmpcod=@cpccod,cmpplnplncod=@cppcod,cmpplndat=@cpdat where cmpplncod=@cpcod
+------------------------------------------------------------------------------------------------------
+    CREATE PROCEDURE delcpln
+@cpcod int
+AS
+	delete from tbcmppln where cmpplncod=@cpcod
+---------------------------------------------
+    CREATE PROCEDURE discpln
+AS
+select * from tbcmppln
+---------------------------
+CREATE PROCEDURE fincpln
+@cpcod int
+AS
+	select * from tbcmppln where cmpplncod=@cpcod
+==================================================
+//for tbprj
+ CREATE PROCEDURE insprj
+@pjdat datetime,
+@pjtit varchar(100),
+@pjdsc varchar(1000),
+@pjlog varchar(100),
+@pjowucod int,
+@pjsts char(1)
+AS
+	insert tbprj values(@pjdat,@pjtit,@pjdsc,@pjlog,@pjowucod,@pjsts)
+------------------------------------------------------------------
+CREATE PROCEDURE updprj
+@pjcod int,
+@pjdat datetime,
+@pjtit varchar(100),
+@pjdsc varchar(1000),
+@pjlog varchar(100),
+@pjowucod int,
+@pjsts char(1)
+AS
+	update tbprj set prjdat=@pjdat,prjtit=@pjtit,prjdsc=@pjdsc,prjlog=@pjlog,prjownusrcod=@pjowucod where prjcod=@pjcod
+-----------------------------------------------------------------------------------------------------------------------
+CREATE PROCEDURE delprj
+@pjcod int
+AS
+	delete from tbprj where prjcod=@pjcod
+-------------------------------------------
+CREATE PROCEDURE disprj
+AS
+	select * from tbprj
+ ------------------------------------------
+CREATE PROCEDURE finprj
+@pjcod int
+AS
+	select * from tbprj where prjcod=@pjcod
+============================================
+//fro tbtkt
+CREATE PROCEDURE instkt
+@tkdat datetime,
+@tkcrucod int,
+@tkdsc varchar(2000),
+@tkno varchar(100),
+@tkat varchar(50),
+@tksts char(1)
+AS
+	insert tbtkt values(@tkdat,@tkcrucod,@tkdsc,@tkno,@tkat,@tksts)
+ ---------------------------------------------------------------------
+ CREATE PROCEDURE updtkt
+@tkcod int,
+@tkdat datetime,
+@tkcrucod int,
+@tkdsc varchar(2000),
+@tkno varchar(100),
+@tkat varchar(50),
+@tksts char(1)
+AS
+	update tbtkt set tktdat=@tkdat,tktcrtusrcod=@tkcrucod,tktdsc=@tkdsc,tktno=@tkno,tktatt=@tkat,tktsts=@tksts where tktcod=@tkcod
+----------------------------------------------------------------------------------------------------------------------------------
+CREATE PROCEDURE deltkt
+@tkcod int
+AS
+	delete from tbtkt where tktcod=@tkcod
+---------------------------------------------
+CREATE PROCEDURE distkt
+AS
+	select * from tbtkt
+---------------------------------------------
+CREATE PROCEDURE fintkt
+@tkcod int
+AS
+select * from tbtkt where tktcod=@tkcod
+==========================================
+//for tbsprint
+CREATE PROCEDURE insspr
+@spno varchar(100),
+@spstdat datetime,
+@spendat datetime,
+@spsts char(1)
+AS
+	insert tbsprint values(@spno,@spstdat,@spendat,@spsts)
+----------------------------------------------------------
+CREATE PROCEDURE updspr
+@spcod int,
+@spno varchar(100),
+@spstdat datetime,
+@spendat datetime,
+@spsts char(1)
+AS
+	update tbsprint set sprno=@spno,sprstrdat=@spstdat,sprenddat=@spendat,sprsts=@spsts where sprcod=@spcod
+------------------------------------------------------------------------------------------------------------
+CREATE PROCEDURE delspr
+@spcod int
+AS
+	delete from tbsprint where sprcod=@spcod
+---------------------------------------------
+CREATE PROCEDURE disspr
+AS
+	select * from tbsprint
+---------------------------------------------
+CREATE PROCEDURE finspr
+@spcod int
+AS
+	select * from tbsprint where sprcod=@spcod
+==================================================
+//for tbsprtkt
+CREATE PROCEDURE inssptkt
+@sptkspcod int,
+@sptktkcod int,
+@sptkasucod int
+AS
+	insert tbsprtkt values(@sptkspcod,@sptktkcod,@sptkasucod)
+-------------------------------------------------------------
+CREATE PROCEDURE updsptkt
+@sptkcod int,
+@sptkspcod int,
+@sptktkcod int,
+@sptkasucod int
+AS
+	update tbsprtkt set sprtktsprcod=@sptkspcod,sprtkttktcod=@sptktkcod,sprtktasgusrcod=@sptkasucod where sprtktcod=@sptkcod
+-----------------------------------------------------------------------------------------------------------------------------
+CREATE PROCEDURE delsptkt
+@sptkcod int
+AS
+	delete from tbsprtkt where sprtktcod=@sptkcod
+---------------------------------------------------
+CREATE PROCEDURE dissptkt
+AS
+	select * from tbsprtkt
+--------------------------------------------------
+CREATE PROCEDURE finsptkt
+@sptkcod int
+AS
+	select * from tbsprtkt where sprtktcod=@sptkcod
+====================================================
+//for tbsprtktcmp
+CREATE PROCEDURE inssptkcm
+@sptkcmsptkcod int,
+@sptkcmucod int,
+@sptkcmdat datetime,
+@sptkcmdsc varchar(1000),
+@sptkcmat varchar(50)
+AS
+	insert tbsprtktcom values(@sptkcmsptkcod,@sptkcmucod,@sptkcmdat,@sptkcmdsc,@sptkcmat)
+-----------------------------------------------------------------------------------------
+CREATE PROCEDURE updsptkcm
+@sptkcmcod int,
+@sptkcmsptkcod int,
+@sptkcmucod int,
+@sptkcmdat datetime,
+@sptkcmdsc varchar(1000),
+@sptkcmat varchar(50)
+AS
+	update tbsprtktcom set sprtktcomsprtktcod=@sptkcmsptkcod,sprtktcomusrcod=@sptkcmucod,
+	sprtktcomdat=@sptkcmdat,sprtktcomdsc=@sptkcmdsc,sprtktcomatt=@sptkcmat where sprtktcomcod=@sptkcmcod
+---------------------------------------------------------------------------------------------------------
+CREATE PROCEDURE delsptkcm
+@sptkcmcod int
+AS
+	delete from tbsprtktcom where sprtktcomcod=@sptkcmcod
+------------------------------------------------------------
+CREATE PROCEDURE dissptkcm
+AS
+	select * from tbsprtktcom
+------------------------------------------------------------
+CREATE PROCEDURE finsptkcm
+@sptkcmcod int
+AS
+	select * from tbsprtktcom where sprtktcomcod=@sptkcmcod
+========================================================================================================================================
+This is the complete database for my project!! Now the next step of this project is classes!!
+    
+
+
+
